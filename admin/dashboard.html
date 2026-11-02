@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+  <title>E-Voting Dashboard &mdash; Osis</title>
+
+  <link rel="icon" href="../images/almadani.png">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    if (localStorage.getItem('sidebar_mini') === 'true') {
+      document.documentElement.classList.add('sidebar-mini-preload');
+      document.addEventListener("DOMContentLoaded", function() {
+        document.body.classList.add('sidebar-mini');
+      });
+    }
+  </script>
+
+  <style>
+    /* CSS Styling Tetap Utuh 100% Sesuai Aslinya */
+    html.sidebar-mini-preload .main-sidebar { width: 95px !important; }
+    html.sidebar-mini-preload .main-content, html.sidebar-mini-preload .main-footer { padding-left: 125px !important; }
+    html.sidebar-mini-preload .main-navbar { left: 95px !important; }
+    body { font-family: 'Nunito', sans-serif !important; background: linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.55)), url('../images/background.jpg') no-repeat center center fixed !important; background-size: cover !important; color: #1e293b !important; }
+    .navbar-bg { display: none !important; }
+    .main-navbar { background: rgba(255, 255, 255, 0.95) !important; backdrop-filter: blur(10px); left: 250px; height: 75px; border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important; transition: all 0.3s ease; padding-left: 25px !important; }
+    .main-navbar .nav-link-user { color: #1e293b !important; font-weight: 700; }
+    .main-navbar .nav-link-user i { color: #3b82f6; }
+    .navbar-brand-text { font-size: 18px !important; font-weight: 900 !important; color: #0f172a !important; text-decoration: none !important; letter-spacing: 0.8px; white-space: nowrap; }
+    body.sidebar-mini .main-navbar { left: 95px !important; }
+    .main-sidebar { background: rgba(255, 255, 255, 0.98) !important; backdrop-filter: blur(10px); border-right: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 4px 0 20px rgba(0,0,0,0.05); position: fixed; top: 0; bottom: 0; left: 0; width: 250px; z-index: 1000; overflow-y: auto;}
+    body.sidebar-mini .main-sidebar, body.sidebar-mini .main-sidebar .sidebar-wrapper { width: 95px !important; transition: all 0.3s; z-index: 890; }
+    body.sidebar-mini .main-content, body.sidebar-mini .main-footer { padding-left: 125px !important; transition: all 0.3s; }
+    .sidebar-brand { display: flex !important; justify-content: space-between !important; align-items: center !important; height: 75px !important; padding: 0 15px !important; margin: 0 !important; border-bottom: none !important; background: transparent !important; overflow: hidden; }
+    body.sidebar-mini .sidebar-brand { justify-content: center !important; padding: 0 !important; width: 95px !important; }
+    .brand-text { font-size: 11px !important; font-weight: 900; color: #0f172a !important; text-decoration: none !important; letter-spacing: 0.3px; white-space: nowrap; }
+    body.sidebar-mini .brand-text { display: none !important; }
+    .btn-toggle-custom { background: #3b82f6 !important; color: #ffffff !important; width: 34px !important; height: 34px !important; min-width: 34px !important; min-height: 34px !important; padding: 0 !important; display: flex !important; justify-content: center !important; align-items: center !important; border-radius: 8px !important; font-size: 14px !important; cursor: pointer; text-decoration: none !important; transition: all 0.2s ease; box-shadow: none !important; border: none !important; flex-shrink: 0 !important; }
+    .btn-toggle-custom:hover { background: #2563eb !important; }
+    .sidebar-menu { list-style: none; padding: 0; margin-top: 15px; }
+    body.sidebar-mini .sidebar-menu li.menu-header { display: none !important; }
+    body.sidebar-mini .sidebar-menu li a { justify-content: center !important; padding: 15px 0 !important; }
+    body.sidebar-mini .sidebar-menu li a i { margin-right: 0 !important; font-size: 20px !important; }
+    body.sidebar-mini .sidebar-menu li a span { display: none !important; }
+    .sidebar-menu li { margin-bottom: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; }
+    .sidebar-menu li.menu-header { font-size: 12px !important; font-weight: 700 !important; color: #1e293b !important; letter-spacing: 1px; padding: 15px 25px 5px 25px !important; text-transform: uppercase; }
+    .sidebar-menu li a { display: flex !important; align-items: center; white-space: nowrap; width: auto !important; color: #1e293b !important; font-weight: 600 !important; border-radius: 8px; margin: 2px 15px !important; padding: 10px 15px !important; height: auto !important; line-height: normal !important; transition: 0.2s ease; text-decoration: none; cursor: pointer;}
+    .sidebar-menu li a i { margin-right: 15px; width: 20px; text-align: center;}
+    .sidebar-menu li a:hover { background-color: #f1f5f9; color: #0f172a !important; }
+    .sidebar-menu li.active a { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important; color: #ffffff !important; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3) !important; }
+    .sidebar-menu li.active a i { color: #ffffff !important; }
+    .main-content { padding-left: 280px; padding-right: 30px; padding-top: 100px; transition: all 0.3s ease; min-height: 80vh;}
+    .stat-nis-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 20px; height: 100%; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); }
+    .stat-nis-icon { width: 56px; height: 56px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #fff; flex-shrink: 0; background: #3b82f6; }
+    .stat-nis-label { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .stat-nis-value { font-size: 28px; font-weight: 800; color: #0f172a; line-height: 1.1; }
+    .card-chart { background: #ffffff !important; border: 1px solid #e2e8f0 !important; border-radius: 14px !important; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important; margin-bottom: 25px; }
+    .card-chart .card-header { background: transparent !important; border-bottom: 1px solid #f1f5f9 !important; padding: 20px 24px !important; }
+    .card-chart .card-header h4 { color: #0f172a !important; font-weight: 800 !important; font-size: 16px !important; margin:0;}
+    .card-chart .card-footer { background: #f8fafc !important; border-top: 1px solid #f1f5f9 !important; padding: 16px 24px !important; border-bottom-left-radius: 14px !important; border-bottom-right-radius: 14px !important; }
+    .btn-flat { border: none !important; border-radius: 8px !important; font-weight: 700 !important; padding: 9px 18px !important; color: #fff !important; box-shadow: none !important; transition: 0.2s; }
+    .btn-flat-excel { background: #10b981 !important; } .btn-flat-excel:hover { background: #059669 !important; }
+    .btn-flat-pdf { background: #ef4444 !important; } .btn-flat-pdf:hover { background: #dc2626 !important; }
+    .btn-flat-chart { background: #3b82f6 !important; } .btn-flat-chart:hover { background: #2563eb !important; }
+    .main-footer { background: rgba(255, 255, 255, 0.95) !important; backdrop-filter: blur(10px); border-top: 1px solid #e2e8f0 !important; color: #64748b !important; padding: 20px 30px 20px 280px !important; display: flex !important; justify-content: center !important; align-items: center !important; text-align: center !important; font-size: 13px !important; font-weight: 600 !important; margin-top: auto !important; }
+    @media (max-width: 1024px) { .main-footer { padding: 20px !important; } .main-content { padding-left: 20px !important; padding-right: 20px !important; } .main-navbar{ left:0; padding-left: 15px !important;} .main-sidebar{ transform: translateX(-250px); transition: 0.3s;} body.sidebar-show .main-sidebar{ transform: translateX(0); } }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="main-wrapper">
+      
+      <!-- NAVBAR -->
+      <nav class="navbar navbar-expand-lg main-navbar fixed-top">
+        <div class="mr-auto d-flex align-items-center">
+          <a href="#" id="mobile-toggle-btn" class="d-lg-none text-dark mr-3" style="font-size:20px;">
+            <i class="fas fa-bars"></i>
+          </a>
+          <a href="#" data-page="default" class="navbar-brand-text">METSCHOO E-VOTING</a>
+        </div>
+        
+        <ul class="d-flex align-items-center m-0 p-0" style="list-style: none;">
+          <li class="dropdown">
+            <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user text-decoration-none">
+              <i class="fas fa-user-circle" style="font-size: 20px; margin-right:6px;"></i>
+              <div class="d-none d-lg-inline-block">Administrator</div>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right shadow-lg border-0 rounded-lg mt-2">
+              <a href="#" class="dropdown-item has-icon font-weight-bold"><i class="fas fa-edit text-primary"></i> Edit Profile</a>
+              <a href="#" class="dropdown-item has-icon font-weight-bold"><i class="fas fa-key text-warning"></i> Ganti Password</a>
+              <div class="dropdown-divider"></div>
+              <a href="#" onclick="logout()" class="dropdown-item has-icon text-danger font-weight-bold confirmation"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- SIDEBAR DENGAN ATRIBUT AUTO-LOADER (DATA-PAGE) -->
+      <div class="main-sidebar shadow">
+        <aside id="sidebar-wrapper">
+          <div class="sidebar-brand">
+            <a href="#" data-page="default" class="brand-text">ADMIN DASHBOARD</a>
+            <a href="#" id="gemini-toggle-btn" class="btn-toggle-custom"><i class="fas fa-bars"></i></a>
+          </div>
+          
+          <ul class="sidebar-menu">
+            <li class="menu-header">DASHBOARD</li>
+            <li class="nav-item active">
+              <a href="#" data-page="default" class="nav-link"><i class="fas fa-fire"></i><span>Dashboard</span></a>
+            </li>
+            
+            <li class="menu-header">MANAJEMEN</li>
+            <li class="nav-item">
+              <a href="#" data-page="user.html" class="nav-link"><i class="fas fa-users"></i><span>Manajemen User</span></a>
+            </li>
+            <li class="nav-item">
+              <a href="#" data-page="kandidat/list.html" class="nav-link"><i class="fas fa-user-tie"></i><span>Manajemen Kandidat</span></a>
+            </li>
+            <li class="nav-item">
+              <a href="#" data-page="kelas.html" class="nav-link"><i class="fas fa-school"></i><span>Manajemen Kelas</span></a>
+            </li>
+            
+            <li class="menu-header">HASIL</li>
+            <li class="nav-item">
+              <a href="#" data-page="perolehan.html" class="nav-link"><i class="fas fa-chart-pie"></i><span>Perolehan Suara</span></a>
+            </li>
+            <li class="nav-item">
+              <a href="#" data-page="lacak_pilihan.html" class="nav-link"><i class="fas fa-user-check"></i><span>Detail Pilihan Siswa</span></a>
+            </li>
+          </ul>
+        </aside>
+      </div>
+
+      <!-- KONTEN UTAMA DASHBOARD -->
+      <div class="main-content" id="main-content">
+        <section class="section">
+          <div class="container-fluid p-0">
+            <!-- Stat Cards -->
+            <div class="row mb-4">
+              <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mb-md-0">
+                <div class="stat-nis-card">
+                  <div class="stat-nis-icon"><i class="fas fa-users"></i></div>
+                  <div>
+                    <div class="stat-nis-label">Total Siswa / Pemilih</div>
+                    <div class="stat-nis-value" id="totalSiswaCounter">

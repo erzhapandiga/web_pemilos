@@ -1,0 +1,116 @@
+<div class="row">
+    <div class="col-md-9">
+       <h3 class="pt-5 pl-5 pb-3">Daftar Kandidat</h3>
+    </div>
+    <div class="col-md-3" style="padding-top:50px;">
+       <a class="btn btn-primary" href="index.html?action=tambah">Tambah Kandidat</a>
+    </div>
+</div>
+<hr class="ml-5 mr-5"/>
+
+<!-- Alert Banner Pesan (Pengganti $_GET['pesan']) -->
+<div id="pesanAlert" class="hidden mr-5 ml-5 alert alert-dismissible fade show" role="alert">
+    <span id="pesanText"></span>
+    <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+        <span aria-hidden='true' style='color:white;'>&times;</span>
+    </button>
+</div>
+
+<div class="row">
+    <div class="col-md-3 ml-5">
+        <select id="periode" class="form-control">
+            <option value="">-- Pilih Periode --</option>
+            <!-- Opsi periode digenerate otomatis via JavaScript di bawah -->
+        </select>
+    </div>
+    
+    <div style="clear:both"></div>
+
+    <div class="col-md-12 mt-2" align='center'>
+        <div style="clear:both"></div>
+        <div class="ml-4 mr-4" id="data">
+            <br>
+            <p class="text-muted">Memuat data kandidat...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. Generate pilihan periode secara otomatis (Pengganti for-loop PHP)
+    const selectPeriode = document.getElementById('periode');
+    for (let i = 16; i < 40; i++) {
+        let k = i + 1;
+        let optVal = `20${i}/20${k}`;
+        let optText = `Periode 20${i} / 20${k}`;
+        let el = document.createElement('option');
+        el.value = optVal;
+        el.textContent = optText;
+        selectPeriode.appendChild(el);
+    }
+
+    // 2. Tangkap pesan sukses/gagal dari parameter URL (Pengganti $_GET['pesan'])
+    const urlParams = new URLSearchParams(window.location.search);
+    const pesan = urlParams.get('pesan');
+    const pesanAlert = document.getElementById('pesanAlert');
+    const pesanText = document.getElementById('pesanText');
+
+    if (pesan === "Berhasil") {
+        pesanAlert.className = 'mr-5 ml-5 alert alert-success alert-dismissible fade show';
+        pesanText.textContent = 'Kandidat Berhasil di tambahkan';
+        pesanAlert.classList.remove('hidden');
+    } else if (pesan === "Gagal") {
+        pesanAlert.className = 'mr-5 ml-5 alert alert-danger alert-dismissible fade show';
+        pesanText.textContent = 'Kandidat Gagal di tambahkan';
+        pesanAlert.classList.remove('hidden');
+    }
+
+    // 3. Fungsi untuk menarik data kandidat dari Database via API Vercel (Pengganti ajax.php)
+    function loadKandidatData(periodeVal = '') {
+        fetch(`/api/get_kandidat?periode=${periodeVal}`)
+            .then(res => res.json())
+            .then(response => {
+                if(response.success && response.data.length > 0) {
+                    let htmlTable = `<div class="table-responsive"><table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center">No</th>
+                                <th>Nama Kandidat</th>
+                                <th class="text-center">Periode</th>
+                                <th class="text-center">Suara</th>
+                                <th class="text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+                    
+                    response.data.forEach((item) => {
+                        htmlTable += `<tr>
+                            <td class="text-center font-weight-bold">${item.no_k}</td>
+                            <td>${item.nama_calon}</td>
+                            <td class="text-center">${item.periode}</td>
+                            <td class="text-center"><span class="badge badge-info px-2 py-1">${item.suara} Suara</span></td>
+                            <td class="text-center">
+                                <a href="index.html?action=edit&id=${item.id_kandidat}" class="btn btn-warning btn-sm font-weight-bold mr-1"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="index.html?action=hapus&id=${item.id_kandidat}" class="btn btn-danger btn-sm font-weight-bold"><i class="fas fa-trash"></i> Hapus</a>
+                            </td>
+                        </tr>`;
+                    });
+
+                    htmlTable += `</tbody></table></div>`;
+                    document.getElementById('data').innerHTML = htmlTable;
+                } else {
+                    document.getElementById('data').innerHTML = '<div class="alert alert-warning mt-3">Belum ada data kandidat untuk periode ini.</div>';
+                }
+            })
+            .catch(() => {
+                document.getElementById('data').innerHTML = '<div class="alert alert-danger mt-3">Gagal terhubung ke server database.</div>';
+            });
+    }
+
+    // Load data pertama kali saat halaman dibuka
+    loadKandidatData();
+
+    // Jalankan ulang saat dropdown periode diubah
+    document.getElementById('periode').addEventListener('change', function() {
+        loadKandidatData(this.value);
+    });
+</script>

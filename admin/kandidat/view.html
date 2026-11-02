@@ -1,0 +1,92 @@
+<div class="d-sm-flex align-items-center justify-content-between mb-4 pl-4 pt-4">
+    <h1 class="h3 mb-0 text-gray-800">Manajemen Kandidat</h1>
+    <a href="?page=kandidat&action=add" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-4">
+        <i class="fas fa-plus fa-sm text-white-50"></i> Tambah Kandidat
+    </a>
+</div>
+
+<div class="row pl-4 pr-4">
+    <div class="col-xl-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Daftar Kandidat Ketua & Wakil OSIS</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th width="5%">No</th>
+                                <th width="10%">Foto</th>
+                                <th width="20%">Nama Calon</th>
+                                <th width="10%">No. Urut</th>
+                                <th width="15%">Periode</th>
+                                <th width="10%">Suara</th>
+                                <th width="30%">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="kandidat-table-body">
+                            <!-- Data akan dimuat otomatis menggunakan JavaScript -->
+                            <tr>
+                                <td colspan="7" class="text-center">Memuat data kandidat...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        const response = await fetch('/api/get_kandidat');
+        const result = await response.json();
+
+        const tbody = document.getElementById('kandidat-table-body');
+        tbody.innerHTML = '';
+
+        if (result.success && result.data.length > 0) {
+            result.data.forEach((k, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td class="text-center">
+                        <img src="../assets/img/kandidat/${k.foto}" alt="${k.nama_calon}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
+                    </td>
+                    <td><strong>${k.nama_calon}</strong></td>
+                    <td class="text-center"><span class="badge badge-info p-2" style="font-size: 14px;">${k.no_k}</span></td>
+                    <td>${k.periode}</td>
+                    <td class="text-center"><span class="badge badge-success p-2" style="font-size: 14px;">${k.suara} Suara</span></td>
+                    <td class="text-center">
+                        <a href="?page=kandidat&action=detail&id=${k.id_kandidat}" class="btn btn-primary btn-sm mb-1" title="Detail">
+                            <i class="fas fa-eye"></i> Detail
+                        </a>
+                        <a href="?page=kandidat&action=edit&id=${k.id_kandidat}" class="btn btn-warning btn-sm mb-1 text-white" title="Edit">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <button onclick="hapusKandidat(${k.id_kandidat}, '${k.nama_calon}')" class="btn btn-danger btn-sm mb-1" title="Hapus">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } else {
+            tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">Belum ada data kandidat.</td></tr>`;
+        }
+    } catch (error) {
+        console.error("Gagal memuat list kandidat:", error);
+        document.getElementById('kandidat-table-body').innerHTML = `<tr><td colspan="7" class="text-center text-danger">Gagal memuat data dari server.</td></tr>`;
+    }
+});
+
+// Fungsi opsional untuk tombol hapus (nanti kita buatkan api hapusnya juga kalau perlu)
+async function hapusKandidat(id, nama) {
+    if (confirm(`Yakin ingin menghapus kandidat "${nama}"?`)) {
+        alert("Fitur hapus segera dihubungkan ke API delete!");
+        // Nanti kita buatkan endpoint api/hapus_kandidat.js di sini
+    }
+}
+</script>

@@ -1,0 +1,61 @@
+<div class="container-fluid px-4 py-4" id="kandidatWrapper">
+    <!-- Konten akan dimuat secara dinamis di sini oleh JavaScript -->
+    <div id="kandidatMainContent">
+        <div class="text-center py-5">
+            <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+            <p class="text-muted mt-2">Memuat data kandidat...</p>
+        </div>
+    </div>
+</div>
+
+<div style="margin-bottom: 200px;"></div>
+
+<script>
+    // Router sederhana berbasis JavaScript (Pengganti switch case PHP $_GET['action'])
+    function loadKandidatPage() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const action = urlParams.get('action') || 'list';
+        const container = document.getElementById('kandidatMainContent');
+
+        if (action === 'tambah') {
+            // Load halaman tambah (pastikan file add.html sudah ada)
+            fetch('kandidat/add.html')
+                .then(res => res.text())
+                .then(html => container.innerHTML = html)
+                .catch(() => container.innerHTML = '<p class="text-danger">Gagal memuat form tambah.</p>');
+        } else if (action === 'edit') {
+            // Load halaman edit (pastikan file edit.html sudah ada)
+            fetch('kandidat/edit.html')
+                .then(res => res.text())
+                .then(html => container.innerHTML = html)
+                .catch(() => container.innerHTML = '<p class="text-danger">Gagal memuat form edit.</p>');
+        } else if (action === 'view') {
+            fetch('kandidat/view.html')
+                .then(res => res.text())
+                .then(html => container.innerHTML = html)
+                .catch(() => container.innerHTML = '<p class="text-danger">Gagal memuat detail kandidat.</p>');
+        } else if (action === 'hapus') {
+            const id = urlParams.get('id');
+            if (id && confirm('Yakin ingin menghapus kandidat ini?')) {
+                fetch(`/api/hapus_kandidat?id=${id}`, { method: 'DELETE' })
+                    .then(res => res.json())
+                    .then(data => {
+                        alert(data.message);
+                        window.location.href = 'kandidat.html';
+                    })
+                    .catch(() => alert('Gagal menghapus data.'));
+            } else {
+                window.location.href = 'kandidat.html';
+            }
+        } else {
+            // Default: List Kandidat
+            fetch('kandidat/list.html')
+                .then(res => res.text())
+                .then(html => container.innerHTML = html)
+                .catch(() => container.innerHTML = '<p class="text-danger">Gagal memuat daftar kandidat.</p>');
+        }
+    }
+
+    // Jalankan router saat halaman dimuat
+    loadKandidatPage();
+</script>

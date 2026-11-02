@@ -1,0 +1,27 @@
+{
+  "name": "pilketos-smkmetland",
+  "version": "1.0.0",
+  "description": "APLIKASI PEMILIHAN OSIS ANGKATAN 2020 - 2021         Diresmikan pada tanggal :",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erzhapandiga/web_pemilos.git"
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/erzhapandiga/web_pemilos/issues"
+  },
+  "homepage": "https://github.com/erzhapandiga/web_pemilos#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "formidable": "^3.5.4",
+    "mysql2": "^3.24.6"
+  }
+}

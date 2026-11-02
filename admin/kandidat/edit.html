@@ -1,0 +1,175 @@
+<div class="container-fluid px-4 py-4">
+    <h3 class="font-weight-bold mb-1" style="color: #0f172a;">Edit Data Kandidat</h3>
+    <p class="text-muted mb-4">Silakan perbarui informasi kandidat di bawah ini.</p>
+    <hr class="mb-4" />
+
+    <!-- Notifikasi Alert -->
+    <div id="alertBanner" class="hidden mb-4 px-4 py-3 rounded-xl text-sm font-semibold"></div>
+
+    <div class="row">
+        <!-- KOLOM KIRI: PREVIEW FOTO KANDIDAT -->
+        <div class="col-lg-4 mb-4 mb-lg-0">
+            <div class="card border-0 shadow-sm rounded-lg p-3 text-center bg-white h-100">
+                <label class="font-weight-bold text-muted mb-3 text-uppercase" style="font-size: 12px; letter-spacing: 0.5px;">Foto Saat Ini</label>
+                <div class="d-flex justify-content-center align-items-center mb-3">
+                    <img id="previewFoto" src="../images/default.png" class="img-fluid rounded-lg shadow-sm" style="max-height: 320px; object-fit: cover; width: 100%;" alt="Foto Kandidat"/>
+                </div>
+                <span id="badgeNoK" class="badge badge-primary py-2 px-3 font-weight-bold rounded-pill">Kandidat No. -</span>
+            </div>
+        </div>
+
+        <!-- KOLOM KANAN: FORM INPUT & EDIT -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-lg p-4 bg-white">
+                <form id="formEditKandidat" enctype="multipart/form-data">
+                    <input type="hidden" id="id_kandidat" name="id" />
+                    <input type="hidden" id="foto_lama" name="f" />
+
+                    <div class="form-group row mb-3">
+                        <label class="col-sm-3 col-form-label font-weight-bold text-dark">No Kandidat</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" id="no_k" name="no_k" required />
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-3">
+                        <label class="col-sm-3 col-form-label font-weight-bold text-dark">Nama Kandidat</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="nama" name="nama" required autocomplete="off" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-3">
+                        <label class="col-sm-3 col-form-label font-weight-bold text-dark">Foto Kandidat</label>
+                        <div class="col-sm-9">
+                            <input type="file" class="form-control-file pt-1" name="foto" accept="image/*" />
+                            <small class="form-text text-muted">Biarkan kosong jika tidak ingin mengganti foto.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-3">
+                        <label class="col-sm-3 col-form-label font-weight-bold text-dark">Detail Data Calon</label>
+                        <div class="col-sm-9">
+                            <textarea name="detail_data" id="detail_data" class="form-control" rows="3" placeholder="Masukkan detail data calon (Tempat/Tanggal Lahir,Kelas,dll)" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-3">
+                        <label class="col-sm-3 col-form-label font-weight-bold text-dark">Visi</label>
+                        <div class="col-sm-9">
+                            <textarea name="visi" id="visi" class="form-control" rows="3" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-3">
+                        <label class="col-sm-3 col-form-label font-weight-bold text-dark">Misi</label>
+                        <div class="col-sm-9">
+                            <textarea name="misi" id="misi" class="form-control" rows="3" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                        <label class="col-sm-3 col-form-label font-weight-bold text-dark">Program</label>
+                        <div class="col-sm-9">
+                            <textarea name="program" id="program" class="form-control" rows="3" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-0">
+                        <div class="col-sm-9 offset-sm-3">
+                            <button type="submit" id="btnUpdate" class="btn btn-success font-weight-bold px-4 py-2 mr-2">
+                                <i class="fas fa-save mr-1"></i> Update Kandidat
+                            </button>
+                            <button type="button" onclick="window.history.go(-1)" class="btn btn-danger font-weight-bold px-4 py-2">
+                                <i class="fas fa-arrow-left mr-1"></i> Kembali
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Ambil ID dari URL (Contoh: edit.html?id=1)
+    const urlParams = new URLSearchParams(window.location.search);
+    const kandidatId = urlParams.get('id');
+
+    // Load data lama kandidat saat halaman dibuka
+    async function loadDetailKandidat() {
+        if (!kandidatId) {
+            alert('ID Kandidat tidak ditemukan!');
+            window.location.href = 'kandidat.html';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/detail_kandidat?id=${kandidatId}`);
+            const result = await response.json();
+
+            if (result.success) {
+                const d = result.data;
+                document.getElementById('id_kandidat').value = d.id_kandidat;
+                document.getElementById('foto_lama').value = d.foto;
+                document.getElementById('no_k').value = d.no_k;
+                document.getElementById('nama').value = d.nama_calon;
+                document.getElementById('detail_data').value = d.detail_data || '';
+                document.getElementById('visi').value = d.visi;
+                document.getElementById('misi').value = d.misi;
+                document.getElementById('program').value = d.program;
+                
+                document.getElementById('badgeNoK').textContent = 'Kandidat No. ' + d.no_k;
+                if (d.foto) {
+                    document.getElementById('previewFoto').src = '../assets/img/kandidat/' + d.foto;
+                }
+            } else {
+                alert('Gagal memuat data kandidat.');
+            }
+        } catch (err) {
+            console.error('Error:', err);
+        }
+    }
+
+    loadDetailKandidat();
+
+    // Proses Submit Update via Fetch API
+    document.getElementById('formEditKandidat').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btnUpdate = document.getElementById('btnUpdate');
+        const alertBanner = document.getElementById('alertBanner');
+
+        btnUpdate.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan...';
+        btnUpdate.disabled = true;
+        alertBanner.classList.add('hidden');
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch('/api/update_kandidat', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            alertBanner.className = 'mb-4 px-4 py-3 rounded-xl text-sm font-semibold ' + 
+                (data.success ? 'bg-emerald-500/10 border border-emerald-500/50 text-emerald-400' : 'bg-red-500/10 border border-red-500/50 text-red-400');
+            alertBanner.textContent = data.message;
+            alertBanner.classList.remove('hidden');
+
+            if (data.success) {
+                setTimeout(() => {
+                    window.location.href = 'kandidat.html';
+                }, 1500);
+            }
+        } catch (error) {
+            alertBanner.className = 'mb-4 px-4 py-3 rounded-xl text-sm font-semibold bg-red-500/10 border border-red-500/50 text-red-400';
+            alertBanner.textContent = 'Terjadi kesalahan pada server.';
+            alertBanner.classList.remove('hidden');
+        }
+
+        btnUpdate.innerHTML = '<i class="fas fa-save mr-1"></i> Update Kandidat';
+        btnUpdate.disabled = false;
+    });
+</script>
